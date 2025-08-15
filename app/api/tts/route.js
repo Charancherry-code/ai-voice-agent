@@ -1,85 +1,27 @@
-// File: app/api/tts/route.js
-
-
-
+// /app/api/tts/route.js
 import { NextResponse } from "next/server";
-
-
+import { generateSpeech } from "@/services/murf.service"; // Adjust path if needed
 
 export async function POST(req) {
+  try {
+    const { text, voiceId } = await req.json();
 
-  try {
+    if (!text || !voiceId) {
+      return NextResponse.json(
+        { error: "Text and voiceId fields are required." },
+        { status: 400 }
+      );
+    }
 
-    // Destructure both text and voiceId from the request body
+    // Delegate the API call to the service
+    const data = await generateSpeech(text, voiceId);
 
-    const { text, voiceId } = await req.json();
+    // Return the successful response from the service
+    return NextResponse.json(data);
 
-
-
-    // Validate that both fields are present
-
-    if (!text || !voiceId) {
-
-      return NextResponse.json(
-
-        { error: "Text and voiceId fields are required." },
-
-        { status: 400 }
-
-      );
-
-    }
-
-
-
-    const murfResponse = await fetch("https://api.murf.ai/v1/speech/generate", {
-
-      method: "POST",
-
-      headers: {
-
-        "Content-Type": "application/json",
-
-        "api-key": process.env.MURF_API_KEY,
-
-      },
-
-      body: JSON.stringify({
-
-        text,    // The text from the user
-
-        voiceId, // The dynamic voiceId from the dropdown
-
-      }),
-
-    });
-
-
-
-    if (!murfResponse.ok) {
-
-      const errorText = await murfResponse.text();
-
-      console.error("Murf API Error:", errorText);
-
-      throw new Error(errorText || "Murf API request failed");
-
-    }
-
-
-
-    const data = await murfResponse.json();
-
-    return NextResponse.json(data);
-
-
-
-  } catch (error) {
-
-    console.error("Internal Server Error in /api/tts:", error.message);
-
-    return NextResponse.json({ error: error.message }, { status: 500 });
-
-  }
-
+  } catch (error) {
+    console.error("Error in /api/tts route:", error.message);
+    // Return a generic server error message
+    return NextResponse.json({ error: error.message || "An internal server error occurred." }, { status: 500 });
+  }
 }

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { AssemblyAI } from 'assemblyai';
 
-// Initialize the AssemblyAI client
+
 const client = new AssemblyAI({
   apiKey: process.env.ASSEMBLYAI_API_KEY,
 });
@@ -17,10 +17,10 @@ export async function POST(req) {
 
     const audioBuffer = Buffer.from(await audioFile.arrayBuffer());
 
-    // Step 1: Upload the audio buffer to get a URL
+   
     const uploadUrl = await client.files.upload(audioBuffer);
 
-    // Step 2: Use the URL to create the transcript
+  
     const transcript = await client.transcripts.create({
       audio_url: uploadUrl,
     });

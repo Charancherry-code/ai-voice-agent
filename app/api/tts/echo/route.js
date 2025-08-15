@@ -55,9 +55,7 @@ export async function POST(req) {
 
     const murfData = await murfResponse.json();
 
-    // =================================================================
-    // THE FIX: Use murfData.audioFile instead of murfData.audioUrl
-    // =================================================================
+  
     return NextResponse.json({
       audioUrl: murfData.audioFile,
       transcript: transcribedText.text,
