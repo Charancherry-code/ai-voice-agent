@@ -66,4 +66,7 @@ MURF_API_KEY="your_murf_api_key_here"
 #Run Development Server
 npm run dev
 
+**1. Clone the repo**
+```bash
+https://github.com/Charancherry-code/ai-voice-agent
 
